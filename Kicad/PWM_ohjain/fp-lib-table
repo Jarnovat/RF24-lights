@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name PWM_ohjain)(type KiCad)(uri E:/KiCad/PWM_ohjain.pretty)(options "")(descr ""))
+)
