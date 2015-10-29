@@ -1,15 +1,15 @@
 /*
-    Copyright (C) 2015  Jarno Vatanen <frogilix@gmail.com>
+	Copyright (C) 2015  Jarno Vatanen <frogilix@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 */
 
 #include <RF24Network.h>
@@ -83,33 +83,33 @@ void setup(void)
 
 void loop(void)
 {
-  // Pump the network regularly
-  network.update();
+	// Pump the network regularly
+	network.update();
 
-  // Is there anything ready for us?
-  while ( network.available() )
-  {
-    // If so, grab it and print it out
-    RF24NetworkHeader header;
-    payload_t payload;
-    network.read(header,&payload,sizeof(payload));
-   
-	/*
-	Serial.print("Received packet:");
-    Serial.print(" r = ");
-	Serial.print(payload.r);
-    Serial.print(" g = ");
-	Serial.print(payload.g);
-	Serial.print(" b = ");
-	Serial.print(payload.b);
-    Serial.print(" w = ");
-	Serial.println(payload.w);
-	*/
-	
-	analogWrite(RPIN,payload.r);
-	analogWrite(BPIN,payload.g);
-	analogWrite(GPIN,payload.b);
-	analogWrite(WPIN,payload.w);
-	
-  }
+	// Is there anything ready for us?
+	while ( network.available() )
+	{
+		// If so, grab it and print it out
+		RF24NetworkHeader header;
+		payload_t payload;
+		network.read(header,&payload,sizeof(payload));
+
+		/*
+		Serial.print("Received packet:");
+		Serial.print(" r = ");
+		Serial.print(payload.r);
+		Serial.print(" g = ");
+		Serial.print(payload.g);
+		Serial.print(" b = ");
+		Serial.print(payload.b);
+		Serial.print(" w = ");
+		Serial.println(payload.w);
+		*/
+
+		analogWrite(RPIN,payload.r);
+		analogWrite(BPIN,payload.g);
+		analogWrite(GPIN,payload.b);
+		analogWrite(WPIN,payload.w);
+
+	}
 }
