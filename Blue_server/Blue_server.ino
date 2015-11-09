@@ -69,7 +69,7 @@ boolean stringComplete = false;		// whether the string is complete
 void setup() {
 	//Start serial communication to PC and BTModule, Serial to PC is optional
 	Serial.begin(19200);
-	BTSERIAL.begin(9600);
+	BTSERIAL.begin(1382400);
 	
 	pinMode(StatePin, INPUT);
 	
@@ -86,6 +86,54 @@ void setup() {
 
 void loop() {
 	
+
+	while (BTSERIAL.available()) {
+
+			char inChar = (char)BTSERIAL.read();
+			//Serial.println(inChar);
+			// add it to the inputString:
+			if (inChar=='@'){
+
+				inputString.toCharArray(buf,18);
+				//Get values from incoming string
+				sscanf(buf, "%hhu %hhu %hhu %hhu %hhu", &address, &rgbw[0], &rgbw[1], &rgbw[2], &rgbw[3]);	
+				
+				Serial.print("BL received:");
+				Serial.print(" address = ");
+				Serial.print(address);
+				Serial.print(" r = ");
+				Serial.print(rgbw[0]);
+				Serial.print(" g = ");
+				Serial.print(rgbw[1]);
+				Serial.print(" b = ");
+				Serial.print(rgbw[2]);
+				Serial.print(" w = ");
+				Serial.println(rgbw[3]);
+				
+				inputString = "";
+				
+				//Send command over to radio
+				payload_t payload = {rgbw[0], rgbw[1], rgbw[2], rgbw[3] };
+				RF24NetworkHeader header(/*to node*/ address);
+		
+				Serial.print("nrf24l01 sending...");
+				bool ok  = network.write(header,&payload,sizeof(payload));
+		
+				if (ok)
+					Serial.println("ok.");
+				else
+					Serial.println("failed.");
+
+				
+			}else{
+				inputString += inChar;
+			}
+		
+		
+	}
+
+
+
 	
 	buttonState = digitalRead(StatePin);
 	
@@ -112,44 +160,8 @@ void loop() {
 		}
 	}
 
-	if (stringComplete) {
-	
-		inputString.toCharArray(buf,20);
-		
-		//Get values from incoming string
-		sscanf(buf, "%hhu %hhu %hhu %hhu %hhu", &address, &rgbw[0], &rgbw[1], &rgbw[2], &rgbw[3]);
 
-		//Clear the input and reset stringComplete status
-		inputString = "";
-		stringComplete = false;
-		
-		//Print data received from BL to PC serial	
-		Serial.print("BL received:");
-		Serial.print(" address = ");
-		Serial.print(address);
-		Serial.print(" r = ");
-		Serial.print(rgbw[0]);
-		Serial.print(" g = ");
-		Serial.print(rgbw[1]);
-		Serial.print(" b = ");
-		Serial.print(rgbw[2]);
-		Serial.print(" w = ");
-		Serial.println(rgbw[3]);
-		
-		
-		//Send command over to radio
-		payload_t payload = {rgbw[0], rgbw[1], rgbw[2], rgbw[3] };
-		RF24NetworkHeader header(/*to node*/ address);
-		
-		Serial.print("nrf24l01 sending...");
-		bool ok  = network.write(header,&payload,sizeof(payload));
-		
-		if (ok)
-			Serial.println("ok.");
-		else
-			Serial.println("failed.");
-	}
-	
+
 	
 }
 
@@ -187,15 +199,3 @@ void OnDisconnect(){
 }
 
 
-void serialEvent3() {
-	while (BTSERIAL.available()) {
-		// get the new byte:
-		char inChar = (char)BTSERIAL.read(); 
-		// add it to the inputString:
-		inputString += inChar;
-		delay(2); 												//Check if this is needed???
-		// if the incoming character is a newline, set a flag
-		// so the main loop can do something about it:
-	}	
-	stringComplete = true;	
-}
