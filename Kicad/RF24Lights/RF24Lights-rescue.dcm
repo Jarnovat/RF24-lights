@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP AP2210
+D 300mA Fixed Low Drop Positive Voltage Regulator, Fixed Output 3.3V, SOT23-3
+K REGULATOR LDO 3.3V
+F http://www.st.com/st-web-https://www.diodes.com/assets/Datasheets/AP2210.pdf
+$ENDCMP
+#
+#End Doc Library
